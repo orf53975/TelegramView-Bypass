@@ -54,17 +54,16 @@ class BYpassSeenTelegram(object):
             agent = 'Mozilla/5.' + str(1) + ' (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)' \
                                                    ' Chrome/58.' + str(1) + '.3029.110 Safari/537.36'
             headersx = {'User-Agent': agent}
-            aa2 = sess.get('http://' + url + '?embed=1', timeout=10, headers=headersx)
+            aa2 = sess.get('http://' + url + '?embed=1', timeout=5, headers=headersx)
             x = aa2.headers.get('Set-Cookie')
             if 'data-view="' in aa2.text.encode('utf-8'):
                 headers = {'X-Requested-With': 'XMLHttpRequest',
                            'User-Agent': agent,
                            'Cookie': str(x).split(';')[0]}
                 Getviwe = 'http://' + url + '?embed=1&view=' + re.findall('data-view="(.*)">', aa2.text.encode('utf-8'))[0]
-                DoneRequest = sess.get(Getviwe, timeout=10, headers=headers)
+                DoneRequest = sess.get(Getviwe, timeout=5, headers=headers)
                 if 'true' in DoneRequest.text.encode('utf-8'):
-                    with open('GoodProxy_okSEen.txt', 'a') as xx:
-                        xx.write(PROXY+ '\n')
+                    pass
                 else:
                     pass
             else:
@@ -95,9 +94,9 @@ class BYpassSeenTelegram(object):
         print self.r + '     [+]' + self.g + ' Total Proxy Loaded! : ' + self.c + str(len(prox))
         thread = []
         try:
-            x = requests.get('http://' + viweAddress + '?embed=1', timeout=10)
+            x = requests.get('http://' + viweAddress + '?embed=1', timeout=5)
             GetSeenCount1 = re.findall('class="tgme_widget_message_views">(.*)</span>',
-                                       x.text.encode('utf-8'))[0].split('<')[0]
+                                      x.text.encode('utf-8'))[0].split('<')[0]
         except:
             self.cls()
             self.print_logo()
@@ -107,20 +106,17 @@ class BYpassSeenTelegram(object):
         time.sleep(1.5)
         print self.r + '     [+]' + self.g + ' Started Seen Proccess! Plase Wait.'
         for proxy in prox:
-            try:
-                t = threading.Thread(target=self.Run, args=(proxy, viweAddress))
-                t.start()
-                thread.append(t)
-                time.sleep(0.02)
-            except:
-                pass
+            t = threading.Thread(target=self.Run, args=(proxy, viweAddress))
+            t.start()
+            thread.append(t)
+            time.sleep(0.02)
         for j in thread:
             j.join()
         try:
-            x = requests.get('http://' + viweAddress + '?embed=1', timeout=10)
+            x = requests.get('http://' + viweAddress + '?embed=1', timeout=5)
             GetSeenCount = re.findall('class="tgme_widget_message_views">(.*)</span>',
                                       x.text.encode('utf-8'))[0].split('<')[0]
-            print self.r + '     [+]' + self.g + ' YouR post Got ' + self.y + \
+            print self.r + '     [+]' + self.g + ' YouR post Got ' + self.y +\
                   str(int(GetSeenCount) - int(GetSeenCount1)) + self.g + ' Seen!'
 
         except:
