@@ -103,13 +103,13 @@ class BYpassSeenTelegram(object):
             print self.r + '  ---------------------------------------------------------------------------------------'
             print self.y + '     [-]' + self.c + ' Check Internet connection! or Make Sure this url Is Valid!'
             sys.exit()
-        time.sleep(1.5)
+        time.sleep(1)
         print self.r + '     [+]' + self.g + ' Started Seen Proccess! Plase Wait.'
         for proxy in prox:
             t = threading.Thread(target=self.Run, args=(proxy, viweAddress))
             t.start()
             thread.append(t)
-            time.sleep(0.02)
+            time.sleep(0.08)
         for j in thread:
             j.join()
         try:
@@ -118,7 +118,6 @@ class BYpassSeenTelegram(object):
                                       x.text.encode('utf-8'))[0].split('<')[0]
             print self.r + '     [+]' + self.g + ' YouR post Got ' + self.y +\
                   str(int(GetSeenCount) - int(GetSeenCount1)) + self.g + ' Seen!'
-
         except:
             self.cls()
             self.print_logo()
