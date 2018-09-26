@@ -1,4 +1,5 @@
-import sys, threading, time, re, random, os
+import re, sys, threading, time
+# Iran-Cyber.Net
 try:
     import requests
 except ImportError:
@@ -7,52 +8,29 @@ except ImportError:
     print '   [-] you need to install requests Module'
     sys.exit()
 
-class BYpassSeenTelegram(object):
-    def __init__(self):
-        self.r = '\033[31m'
-        self.g = '\033[32m'
-        self.y = '\033[33m'
-        self.b = '\033[34m'
-        self.m = '\033[35m'
-        self.c = '\033[36m'
-        self.w = '\033[37m'
-        self.rr = '\033[39m'
-        self.cls()
-        self.print_logo()
-        self.main()
-        self.seen = 0
-        self.AllSeens = 0
+try:
+    PROXYx = open(sys.argv[1], 'r').read().splitlines()
+    url = sys.argv[2]
+except:
+    print('\n\n-----------------------------------------------------')
+    print('usage: python {} proxy.txt linkPost'.format(sys.argv[0]))
+    sys.exit()
+thread = []
+if url.startswith('http://'):
+    url = url.replace('http://', '')
+elif url.startswith('https://'):
+    url = url.replace('https://', '')
+else:
+    pass
 
-    def print_logo(self):
-        clear = "\x1b[0m"
-        colors = [36, 32, 34, 35, 31, 37, 30, 33, 38, 39]
-
-        x = """
-                   _____                   _____           _           _   
-                  / ____|                 |  __ \         (_)         | |  
-                 | (___   ___  ___ _ __   | |__) | __ ___  _  ___  ___| |_ 
-                  \___ \ / _ \/ _ \ '_ \  |  ___/ '__/ _ \| |/ _ \/ __| __|
-                  ____) |  __/  __/ | | | | |   | | | (_) | |  __/ (__| |_ 
-                 |_____/ \___|\___|_| |_| |_|   |_|  \___/| |\___|\___|\__|
-                                                         _/ |              
-                   Iran-Cyber.Net - github.com/04x      |__/               
-                
-    """
-        for N, line in enumerate(x.split("\n")):
-            sys.stdout.write("\x1b[1;%dm%s%s\n" % (random.choice(colors), line, clear))
-            time.sleep(0.01)
-
-    def cls(self):
-        linux = 'clear'
-        windows = 'cls'
-        os.system([linux, windows][os.name == 'nt'])
-
-    def Run(self, PROXY, url):
-        try:
-            sess = requests.session()
-            sess.proxies = {'http': PROXY}
-            agent = 'Mozilla/5.' + str(1) + ' (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)' \
-                                                   ' Chrome/58.' + str(1) + '.3029.110 Safari/537.36'
+def StartSeen(url, PROXY):
+    sess = requests.session()
+    sess.proxies = {'http': PROXY, 'https': PROXY}
+    agent = 'Mozilla/5.1 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)' \
+                                    ' Chrome/58.1.3029.110 Safari/537.36'
+    try:
+        getz = sess.get('http://httpbin.org/html', timeout=10, headers={'User-Agent': agent}).text
+        if 'Herman Melville - Moby-Dick' in getz:
             headersx = {'User-Agent': agent}
             aa2 = sess.get('http://' + url + '?embed=1', timeout=10, headers=headersx)
             x = aa2.headers.get('Set-Cookie')
@@ -63,67 +41,36 @@ class BYpassSeenTelegram(object):
                 Getviwe = 'http://' + url + '?embed=1&view=' + re.findall('data-view="(.*)">', aa2.text.encode('utf-8'))[0]
                 DoneRequest = sess.get(Getviwe, timeout=10, headers=headers)
                 if 'true' in DoneRequest.text.encode('utf-8'):
-                    print PROXY + ' ---> SeeN ok'
+                    print '{} --> Seen OK!'.format(PROXY)
+                    with open('GoodProxy.txt', 'a') as XX:
+                        XX.write(PROXY + '\n')
                 else:
-                    print PROXY + ' ---> Seen NO'
-                    self.Run(PROXY, url)
+                    print '{} --> Seen No!'.format(PROXY)
+                    with open('SeenNoProxy.txt', 'a') as XX:
+                        XX.write(PROXY + '\n')
             else:
-                self.Run(PROXY, url)
-        except:
-            try:
-                sess = requests.session()
-                sess.proxies = {'https': PROXY}
-                agent = 'Mozilla/5.' + str(1) + ' (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)' \
-                                                ' Chrome/58.' + str(1) + '.3029.110 Safari/537.36'
-                headersx = {'User-Agent': agent}
-                aa2 = sess.get('https://' + url + '?embed=1', timeout=10, headers=headersx)
-                x = aa2.headers.get('Set-Cookie')
-                if 'data-view="' in aa2.text.encode('utf-8'):
-                    headers = {'X-Requested-With': 'XMLHttpRequest',
-                               'User-Agent': agent,
-                               'Cookie': str(x).split(';')[0]}
-                    Getviwe = 'https://' + url + '?embed=1&view=' + \
-                              re.findall('data-view="(.*)">', aa2.text.encode('utf-8'))[0]
-                    DoneRequest = sess.get(Getviwe, timeout=10, headers=headers)
-                    if 'true' in DoneRequest.text.encode('utf-8'):
-                        print PROXY + ' ---> SeeN ok'
-                    else:
-                        self.Run(PROXY, url)
-                else:
-                    self.Run(PROXY, url)
-            except:
-                print PROXY + ' ---> Seen NO'
-
-    def main(self):
-        try:
-            fileproxy = sys.argv[1]
-            viweAddress = sys.argv[2]
-        except:
-            self.cls()
-            self.print_logo()
-            print self.r + '  ---------------------------------------------------------------------------------------'
-            print self.y + '     [-]' + self.c + ' usage :' + self.g \
-                  + ' python GoTSeeN.py ListProxy.txt http://t.me/postlink'
-            sys.exit()
-        if viweAddress.startswith("http://"):
-            viweAddress = viweAddress.replace("http://", "")
-        elif viweAddress.startswith("https://"):
-            viweAddress = viweAddress.replace("https://", "")
+                print '{} --> Cant Get data-view'.format(PROXY)
+                with open('cantGetDAta-viewProxy.txt', 'a') as XX:
+                    XX.write(PROXY + '\n')
         else:
-            pass
-        with open(fileproxy, 'r') as x:
-            prox = x.read().splitlines()
+            print '{} --> Proxy Not Work'.format(PROXY)
+            with open('BadProxy.txt', 'a') as XX:
+                XX.write(PROXY + '\n')
+    except requests.exceptions.ReadTimeout:
+        print '{} --> Proxy Time Out!'.format(PROXY)
+        with open('BadProxy.txt', 'a') as XX:
+            XX.write(PROXY + '\n')
+    except requests.exceptions.ConnectionError:
+        print '{} --> Connection aborted!'.format(PROXY)
+        with open('BadProxy.txt', 'a') as XX:
+            XX.write(PROXY + '\n')
 
-        print self.r + '     [+]' + self.g + ' Total Proxy Loaded! : ' + self.c + str(len(prox))
-        thread = []
-        print self.r + '     [+]' + self.g + ' Started Seen Proccess! Plase Wait.'
-        time.sleep(1)
-        for proxy in prox:
-            t = threading.Thread(target=self.Run, args=(proxy, viweAddress))
-            t.start()
-            thread.append(t)
-            time.sleep(0.08)
-        for j in thread:
-            j.join()
 
-BYpassSeenTelegram()
+for proxy in PROXYx:
+    t = threading.Thread(target=StartSeen, args=(url, proxy))
+    t.start()
+    thread.append(t)
+    time.sleep(0.08)
+for j in thread:
+    j.join()
+
